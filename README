@@ -1,0 +1,19 @@
+Initial JSMS implementation using NodeJS
+========================================
+
+There are four files that work together in this prototype.  This is necessary
+because we use python for cryptography ,since it provides better primitives 
+than any JS crypto library I found.  Note, however, that the JOSE module has
+a crypto abstraction layer so that other crypto libraries can be plugged in
+fairly transparently.
+-- example.js : Shows how to use the JOSE NodeJS module
+-- jose.js    : The JOSE NodeJS module
+-- chelp.py   : A command-line wrapper 
+-- CryptoHelper.py : A python library with core crypto routines
+
+Quick Start:
+-- Install dependencies:
+    -- PyCrypto: https://www.dlitz.net/software/pycrypto/
+    -- exec-sync: http://search.npmjs.org/#/exec-sync
+    -- b64url: http://search.npmjs.org/#/b64url
+> node example.js
