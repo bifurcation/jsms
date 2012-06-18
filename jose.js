@@ -324,7 +324,7 @@ _JOSE_DownMap = {
     "uri": "u",
     "userKeyMaterial": "uk",
     "version": "v",
-},
+};
     
 _JOSE_UpMap = {
     "i": "KEKIdentifier",
@@ -355,7 +355,7 @@ _JOSE_UpMap = {
     "u": "uri",
     "uk": "userKeyMaterial",
     "v": "version",
-},
+};
 
 
 

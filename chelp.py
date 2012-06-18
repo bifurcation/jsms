@@ -2,7 +2,17 @@
 
 import sys
 import base64
+import re
 from CryptoHelper import CryptoHelper
+
+# Wrapper functions, because base64 doesn't deal well with unpadded
+def b64d(x):
+    while len(x) % 4 > 0:
+        x = x + "="
+    return base64.urlsafe_b64decode(x)
+def b64e(x):
+    y = base64.urlsafe_b64encode(x)
+    return re.sub(r'=+$', "", y)
 
 def long_b64e(x):
     a = []
@@ -10,10 +20,10 @@ def long_b64e(x):
         a.append(x % 256)
         x >>= 8
     a.reverse()
-    return base64.urlsafe_b64encode(bytearray(a))
+    return b64e(bytearray(a))
 
 def long_b64d(b):
-    a = base64.urlsafe_b64decode(b)
+    a = b64d(b)
     x = long(a.encode("hex"), 16)
     return x
 
@@ -46,8 +56,6 @@ def main():
 
     cmd = sys.argv[1]
     a = sys.argv[2:]
-    b64d = base64.urlsafe_b64decode # For great convenience!
-    b64e = base64.urlsafe_b64encode # For great convenience!
     
     ret = b''
     if cmd == "random": # <bytes>
@@ -120,7 +128,7 @@ def main():
     if isinstance(ret,bool):
         print "+{0}".format(ret)
     else:
-        print "+" + base64.urlsafe_b64encode(ret)
+        print "+" + b64e(ret)
 
 
 main()

@@ -93,8 +93,49 @@ function generateExamples() {
     console.log(edata)
 }
 
+function emulateJWS() {
+    var b64url = require("b64url"); // We'll need this later
+
+    // Example from  http://tools.ietf.org/html/draft-ietf-jose-json-web-signature-02#section-3.1
+    var compact0 = "eyJ0eXAiOiJKV1QiLA0KICJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJqb2UiLA0KICJleHAiOjEzMDA4MTkzODAsDQogImh0dHA6Ly9leGFtcGxlLmNvbS9pc19yb290Ijp0cnVlfQ.dBjftJeZ4CVP-mB92K27uhbUJU1p1r_wW1gFWFOEjXk";
+    var parts = compact0.split(".");
+    var content = b64url.decode(parts[1]);
+
+    // MAC the data with a symmetric key
+    var adata  = jose.auth_mac_direct(content, keyID);
+    var cadata = jose.compact_j(adata);
+    var jadata = JSON.parse(cadata);
+
+    // Compute the compact as in the draft, just base64url-encoding the compact representation
+    var compact1 = b64url.encode(cadata);
+
+
+    // Modify the JSMS object to pull out the content and the MAC value
+    // 1. Replace the key identifier with something short 
+    jadata.ki = "QQ"; // == 'A'
+    // 2. Remove the content and the mac
+    var content = jadata.c;
+    var mac = jadata.mac;
+    delete jadata.c;
+    delete jadata.mac;
+    // 3. Base64url encode the detached JSMS body
+    var body   = JSON.stringify(jadata);
+    var body64 = b64url.encode(body);
+    // 4. Patch together with dots
+    var compact2 = body64 +"."+ content +"."+ mac;
+
+    // See how we did
+    console.log(compact0);
+    console.log(compact0.length);
+    console.log(compact1);
+    console.log(compact1.length);
+    console.log(compact2);
+    console.log(compact2.length);
+}
+
 //signTest();
 //authTest();
 //encryptTest();
 //compactTest();
-generateExamples();
+//generateExamples();
+emulateJWS();
